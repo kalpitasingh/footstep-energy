@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FOOTSTEP ENERGY ® — Design Beyond Reality</title>
+
+
+
+<!-- Google Fonts: Space Grotesk, Syne, JetBrains Mono -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght\@300;400;500;600;700&family=Space+Grotesk:wght\@500;700;800&family=Syne:wght\@700;800;900&display=swap" rel="stylesheet">
+
+
+
+<!-- Tailwind CSS CDN -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+
+<!-- Three.js for Photorealistic PBR WebGL -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+
+  <style>
+
+    :root {
+
+      --font-display: 'Syne', sans-serif;
+
+      --font-tech: 'Space Grotesk', sans-serif;
+
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --lilac: #BBA0D0;
+
+    }
+
+
+
+    * {
+
+      box-sizing: border-box;
+
+      user-select: none;
+
+    }
+
+
+
+    body {
+
+      background-color: #030305;
+
+      color: #FFFFFF;
+
+      font-family: var(--font-tech);
+
+      overflow-x: hidden;
+
+      min-height: 100vh;
+
+      width: 100vw;
+
+      margin: 0;
+
+      -webkit-font-smoothing: antialiased;
+
+      cursor: default;
+
+    }
+
+
+
+/* Cinematic Purple Nebula Glow */
+
+    .nebula-glow {
+
+      background: radial-gradient(circle 750px at var(--mouse-x, 75%) var(--mouse-y, 40%), rgba(147, 88, 219, 0.22), transparent 70%),
+
+                  radial-gradient(circle 500px at 20% 85%, rgba(95, 45, 155, 0.16), transparent 65%);
+
+      transition: background 0.15s ease-out;
+
+    }
+
+
+
+/* 1px Chassis Bounding Box with Corner Accents */
+
+    .cad-chassis {
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+
+      box-shadow: 0 0 90px rgba(0, 0, 0, 0.95);
+
+    }
+
+
+
+/* Photorealistic Silver Chrome Typography with Specular Horizon Glint */
+
+    .chrome-word-photoreal {
+
+      position: relative;
+
+      display: inline-block;
+
+      font-family: var(--font-display);
+
+      text-transform: uppercase;
+
+      font-weight: 900;
+
+      color: #FFFFFF;
+
+      background: linear-gradient(180deg, 
+
+        #FFFFFF 0%, 
+
+        #EDF2F7 20%, 
+
+        #9DA7B8 40%, 
+
+        #FFFFFF 47%,
+
+        #05060A 49%, 
+
+        #0B0D13 54%, 
+
+        #2A303D 63%, 
+
+        #8793A6 80%, 
+
+        #FFFFFF 94%, 
+
+        #6B7484 100%
+
+      );
+
+      -webkit-background-clip: text;
+
+      -webkit-text-fill-color: transparent;
+
+      filter: drop-shadow(0 2px 0px rgba(255, 255, 255, 0.9))
+
+              drop-shadow(0 -1px 0px rgba(0, 0, 0, 0.9))
+
+              drop-shadow(0 10px 30px rgba(187, 160, 208, 0.45));
+
+    }
+
+
+
+    .chrome-word-photoreal::after {
+
+      content: 'HARVEST';
+
+      position: absolute;
+
+      left: 0;
+
+      top: 0;
+
+      background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.95) 50%, transparent 65%);
+
+      background-size: 250% 100%;
+
+      -webkit-background-clip: text;
+
+      -webkit-text-fill-color: transparent;
+
+      animation: chrome-glint 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+      pointer-events: none;
+
+    }
+
+
+
+    @keyframes *chrome-glint* {
+
+      0% { background-position: 250% 0; }
+
+      100% { background-position: -250% 0; }
+
+    }
+
+
+
+/* Lilac Accent Text */
+
+    .text-lilac {
+
+      color: var(--lilac);
+
+      text-shadow: 0 0 25px rgba(187, 160, 208, 0.4);
+
+    }
+
+
+
+/* Floating Translucent Glass Pills */
+
+    .glass-pill {
+
+      background: rgba(14, 15, 22, 0.72);
+
+      backdrop-filter: blur(24px);
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+    }
+
+
+
+/* Custom Fluid Cursor */
+
+    #custom-cursor {
+
+      pointer-events: none;
+
+      position: fixed;
+
+      width: 24px;
+
+      height: 24px;
+
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
+
+      border-radius: 50%;
+
+      transform: translate(-50%, -50%);
+
+      transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+
+      z-index: 9999;
+
+      mix-blend-mode: difference;
+
+    }
+
+    #cursor-dot {
+
+      pointer-events: none;
+
+      position: fixed;
+
+      width: 5px;
+
+      height: 5px;
+
+      background: #FFFFFF;
+
+      border-radius: 50%;
+
+      transform: translate(-50%, -50%);
+
+      z-index: 10000;
+
+    }
+
+
+
+/* Smooth Scrollbar */
+
+    ::-webkit-scrollbar {
+
+      width: 6px;
+
+    }
+
+    ::-webkit-scrollbar-track {
+
+      background: #050508;
+
+    }
+
+    ::-webkit-scrollbar-thumb {
+
+      background: #252836;
+
+      border-radius: 3px;
+
+    }
+
+
+
+/* Hardware Piezo Ripple Animation */
+
+    .piezo-active {
+
+      border-color: #38BDF8 !important;
+
+      background-color: rgba(56, 189, 248, 0.25) !important;
+
+      color: #FFFFFF !important;
+
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.8) !important;
+
+      transform: scale(1.08);
+
+      transition: all 0.15s ease-out;
+
+    }
+
+
+
+    .piezo-idle {
+
+      transition: all 0.5s ease-in;
+
+    }
+
+  </style>
+
+</head>
+
+<body class="p-2 sm:p-4 lg:p-6 flex items-center justify-center min-h-screen">
+
+
+
+<!-- Fluid Dynamic Cursor -->
+
+  <div id="custom-cursor"></div>
+
+  <div id="cursor-dot"></div>
+
+
+
+<!-- MAIN POSTER / VIEWPORT FRAME -->
+
+  <div id="hero-frame" class="w-full max-w-[1540px] min-h-[92vh] lg:h-[94vh] bg-[#050508] cad-chassis rounded-3xl relative overflow-hidden nebula-glow flex flex-col justify-between p-6 sm:p-8 lg:p-10 transition-transform duration-300 ease-out">
+
+
+
+<!-- Vertical Page Indicator Dots -->
+
+    <div class="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 flex-col space-y-3 z-30 pointer-events-auto">
+
+      <span class="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_#FFF] cursor-pointer" title="Dashboard"></span>
+
+      <span class="w-1.5 h-1.5 rounded-full bg-white/30 hover:bg-white/70 transition-colors cursor-pointer" onclick="toggleModal('tile-modal')" title="Tile Matrix"></span>
+
+      <span class="w-1.5 h-1.5 rounded-full bg-white/30 hover:bg-white/70 transition-colors cursor-pointer" onclick="toggleModal('graph-modal')" title="Analytics"></span>
+
+      <span class="w-1.5 h-1.5 rounded-full bg-white/30 hover:bg-white/70 transition-colors cursor-pointer" onclick="toggleModal('log-modal')" title="Feed"></span>
+
+    </div>
+
+
+
+<!-- TOP NAVIGATION HEADER -->
+
+    <header class="flex items-center justify-between z-30 relative font-mono sm:pl-4">
+
+<!-- Brand Identifier -->
+
+      <div class="flex items-center space-x-2 text-white text-sm sm:text-base font-bold tracking-widest uppercase group cursor-pointer">
+
+        <span class="text-neutral-400 font-light group-hover:rotate-90 transition-transform duration-300">+</span>
+
+        <span style="font-family: var(--font-tech);">FOOTSTEP ENERGY</span>
+
+        <span class="text-[10px] text-neutral-500 font-normal">®</span>
+
+      </div>
+
+
+
+<!-- Segmented Floating Pill Dock -->
+
+      <nav class="hidden md:flex items-center space-x-1 px-4 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-xs">
+
+        <button class="px-4 py-1 rounded-full text-white font-semibold bg-white/15 border border-white/20 shadow-inner">
+
+          OVERVIEW
+
+        </button>
+
+        <button onclick="toggleModal('tile-modal')" class="px-4 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
+
+          TILES
+
+        </button>
+
+        <button onclick="toggleModal('graph-modal')" class="px-4 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
+
+          ANALYTICS
+
+        </button>
+
+        <button onclick="toggleModal('log-modal')" class="px-4 py-1 rounded-full text-neutral-400 hover:text-white transition-colors">
+
+          LIVE FEED
+
+        </button>
+
+      </nav>
+
+
+
+<!-- System Status Capsule with Live ESP32 Mode Badge -->
+
+      <div class="flex items-center space-x-3 text-xs">
+
+<!-- Node Hardware ID & Last Heartbeat -->
+
+        <div class="hidden sm:flex flex-col text-right">
+
+          <span class="text-white font-semibold text-[11px]" id="header-node-id">ESP32 TESTBENCH</span>
+
+          <span class="text-[9px] text-neutral-400 font-mono" id="header-last-sync">SYNC: --:--:--</span>
+
+        </div>
+
+
+
+<!-- Live ESP32 Indicator Pill -->
+
+        <div id="demo-mode-badge" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-amber-950/40 border border-amber-500/40 text-amber-300 font-bold text-[10px] tracking-wider shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+
+          <span>LIVE ESP32</span>
+
+        </div>
+
+
+
+<!-- Connection State Indicator -->
+
+        <div id="system-status-badge" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 font-bold text-[11px] shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#10B981]"></span>
+
+          <span id="system-status-text">SYSTEM ONLINE</span>
+
+        </div>
+
+      </div>
+
+
+
+    </header>
+
+
+
+<!-- HERO MAIN INTERACTION AREA -->
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-6 items-center relative z-20 my-auto py-4 sm:pl-4 w-full">
+
+
+
+<!-- Left 7 Cols: Typography -->
+
+      <div class="lg:col-span-7 xl:col-span-7 space-y-4 z-20 relative pointer-events-auto pr-2 lg:pr-6" id="hero-text-container">
+
+        <div class="flex items-center space-x-3 text-xs font-mono text-neutral-400 tracking-wider uppercase">
+
+          <span>KINETIC HARVEST TELEMETRY PLATFORM</span>
+
+          <span class="text-neutral-600">© 2026</span>
+
+        </div>
+
+
+
+<!-- 3-Line Lockup: Solid White + Soft Lilac + Real 3D Chrome -->
+
+        <div class="space-y-0 leading-[0.86] select-none" style="font-family: var(--font-display);">
+
+          <div class="text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tight text-white transition-transform duration-300">
+
+            FOOTSTEP
+
+          </div>
+
+          <div class="text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tight text-lilac transition-transform duration-300">
+
+            ENERGY
+
+          </div>
+
+          <div class="text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tight chrome-word-photoreal transition-transform duration-300">
+
+            HARVEST
+
+          </div>
+
+        </div>
+
+
+
+        <p class="text-xs sm:text-sm text-neutral-300 max-w-lg leading-relaxed pt-2">
+
+          Converting pedestrian mechanical impulse into autonomous electrical energy via spring-biased piezoelectric transducer discs, bridge rectification, and buffer storage.
+
+        </p>
+
+
+
+      </div>
+
+
+
+<!-- Right 5 Cols: Exact Photorealistic 4-Point Chrome Star -->
+
+      <div class="lg:col-span-5 xl:col-span-5 h-[340px] sm:h-[400px] lg:h-[450px] relative flex items-center justify-center pointer-events-auto z-10">
+
+        <div id="star-canvas-container" class="w-full h-full max-w-[450px] max-h-[450px] relative flex items-center justify-center">
+
+<!-- 3D Liquid Chrome WebGL Canvas -->
+
+          <canvas id="arch-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+
+<!-- Interaction Hint -->
+
+          <div class="absolute bottom-1 right-2 text-right font-mono text-[10px] text-neutral-400 z-30 pointer-events-none select-none">
+
+            <div class="text-white font-semibold flex items-center justify-end space-x-1">
+
+              <span>INTERACTIVE CHROME STAR</span>
+
+              <span class="text-lilac">↗</span>
+
+            </div>
+
+            <div class="text-[8px] text-neutral-500 uppercase tracking-widest">[ Drag to rotate • Physics reactive ]</div>
+
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+<!-- BOTTOM DECK: Telemetry Card + Exploration Dock + Status Indicators -->
+
+    <footer class="z-30 relative pt-4 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-4 font-mono sm:pl-4">
+
+<!-- 1. Floating Telemetry Card -->
+
+      <div onclick="toggleModal('graph-modal')" class="glass-pill rounded-2xl p-3 sm:p-4 flex items-center space-x-4 w-full sm:w-auto hover:border-purple-400/60 transition-all cursor-pointer group">
+
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/40 via-slate-900 to-black flex items-center justify-center border border-white/30 shadow-[0_0_15px_rgba(187,160,208,0.3)] group-hover:scale-105 transition-transform">
+
+          <span class="text-white text-lg">⚡</span>
+
+        </div>
+
+        <div>
+
+          <div class="flex items-baseline space-x-2">
+
+            <span class="text-2xl sm:text-3xl font-black font-mono text-white" id="hero-energy-val">—</span>
+
+          <span id="piezo-voltage" class="text-sm font-bold text-lilac">Loading...</span>
+
+          </div>
+
+          <div class="text-[9px] text-neutral-400 uppercase tracking-wider flex items-center space-x-2 mt-0.5">
+
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+
+            <span id="hero-strike-tag">CAPACITOR VOLTAGE SENSOR NOT INSTALLED</span>
+
+          </div>
+
+        </div>
+
+        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white group-hover:bg-white/25 group-hover:translate-x-1 transition-all ml-2">
+
+          →
+
+        </div>
+
+      </div>
+
+
+
+<!-- 2. Center Exploration Dock -->
+
+      <div class="flex items-center space-x-3">
+
+        <div class="flex items-center space-x-1.5 text-[10px] text-neutral-400 uppercase tracking-widest hidden sm:flex mr-1">
+
+          <span>MODULE DOCK</span>
+
+          <span class="w-1.5 h-1.5 rounded-full bg-white/70"></span>
+
+        </div>
+
+<!-- Module 1: Generation Graph Spline -->
+
+        <button onclick="toggleModal('graph-modal')" class="w-11 h-11 rounded-xl bg-black/60 border border-white/15 hover:border-purple-400/80 p-2.5 flex items-center justify-center transition-all hover:scale-110 group" title="Voltage history from ThingSpeak">
+
+          <svg class="w-full h-full text-neutral-400 group-hover:text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+            <path d="M3 17l6-6 4 4 8-8" />
+
+          </svg>
+
+        </button>
+
+
+
+<!-- Module 2: Active Tile Matrix -->
+
+        <button id="dock-tile-btn" onclick="toggleModal('tile-modal')" class="w-11 h-11 rounded-xl bg-black/60 border border-white/15 hover:border-purple-400/80 p-2.5 flex items-center justify-center transition-all hover:scale-110 group transition-colors" title="Piezoelectric Tile Matrix">
+
+          <svg class="w-full h-full text-neutral-400 group-hover:text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+
+            <circle cx="12" cy="12" r="3" />
+
+          </svg>
+
+        </button>
+
+
+
+<!-- Module 3: Real-Time Footstep Stream -->
+
+        <button onclick="toggleModal('log-modal')" class="w-11 h-11 rounded-xl bg-black/60 border border-white/15 hover:border-purple-400/80 p-2.5 flex items-center justify-center transition-all hover:scale-110 group" title="Transient Impact Log">
+
+          <svg class="w-full h-full text-neutral-400 group-hover:text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+            <path d="M4 6h16M4 12h16M4 18h8" />
+
+          </svg>
+
+        </button>
+
+
+
+<!-- Module 4: Hardware Health Diagnostics -->
+
+        <button onclick="toggleModal('status-modal')" class="w-11 h-11 rounded-xl bg-black/60 border border-white/15 hover:border-purple-400/80 p-2.5 flex items-center justify-center transition-all hover:scale-110 group" title="ESP32 Diagnostics">
+
+          <svg class="w-full h-full text-neutral-400 group-hover:text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+            <circle cx="12" cy="12" r="9" />
+
+            <path d="M12 7v5l3 3" />
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+
+<!-- 3. Right Supporting Dynamic Telemetry Deck -->
+
+      <div class="glass-pill rounded-2xl px-5 py-3 flex items-center space-x-5 text-xs w-full sm:w-auto justify-between">
+
+        
+
+        <div>
+
+          <div class="text-[8px] text-neutral-500 uppercase tracking-widest">Piezo Signal</div>
+
+          <div class="text-sm sm:text-base font-bold text-cyan-300 font-mono mt-0.5" id="hero-voltage">0.00V</div>
+
+        </div>
+
+
+
+      </div>
+
+
+
+    </footer>
+
+
+
+  </div>
+
+
+
+<!-- EXPANDABLE TELEMETRY MODALS -->
+
+
+
+<!-- MODAL 1: GENERATION GRAPH -->
+
+  <div id="graph-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
+
+    <div class="bg-[#0A0B10] border border-white/20 rounded-3xl p-8 max-w-3xl w-full relative shadow-[0_0_60px_rgba(187,160,208,0.2)]">
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+
+        <div>
+
+          <div class="flex items-center space-x-2">
+
+            <h3 class="text-xl font-bold font-mono uppercase text-white">Voltage History</h3>
+
+            <span class="text-[10px] px-2 py-0.5 rounded bg-purple-950/80 border border-purple-400/40 text-purple-300">LIVE VOLTAGE</span>
+
+          </div>
+
+          <p class="text-xs font-mono text-neutral-400 mt-1">Recent voltage readings received from ThingSpeak Field 1.</p>
+
+        </div>
+
+        <button onclick="toggleModal('graph-modal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25">✕</button>
+
+      </div>
+
+
+
+      <div class="w-full h-64 mt-6 relative">
+
+        <svg id="generation-graph-svg" class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200">
+
+          <defs>
+
+            <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
+
+              <stop offset="0%" stop-color="#C084FC" stop-opacity="0.45" />
+
+              <stop offset="100%" stop-color="#000" stop-opacity="0.0" />
+
+            </linearGradient>
+
+          </defs>
+
+<!-- Dynamic Area & Spline Lines -->
+
+          <path id="graph-area-path" d="M 0,180 C 60,175 120,160 180,120 C 240,80 270,35 330,30 C 390,25 420,95 480,100 C 540,105 570,20 600,15 L 600,200 L 0,200 Z" fill="url(#curveFill)" />
+
+          <path id="graph-line-path" d="M 0,180 C 60,175 120,160 180,120 C 240,80 270,35 330,30 C 390,25 420,95 480,100 C 540,105 570,20 600,15" fill="none" stroke="#C084FC" stroke-width="3" stroke-linecap="round" />
+
+        </svg>
+
+      </div>
+
+
+
+      <div class="flex justify-between font-mono text-xs text-neutral-500 pt-3 border-t border-white/10">
+
+        <span>Oldest</span>
+
+        <span>Recent</span>
+
+        <span>Voltage (V)</span>
+
+        
+<span class="text-purple-300 font-bold" id="graph-peak-label">Loading...</span>
+
+
+        <span>24:00</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+<!-- MODAL 2: TILE MATRIX -->
+
+  <div id="tile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
+
+    <div class="bg-[#0A0B10] border border-white/20 rounded-3xl p-8 max-w-lg w-full relative text-center shadow-[0_0_60px_rgba(187,160,208,0.2)]">
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-4 text-left">
+
+        <div>
+
+          <div class="flex items-center space-x-2">
+
+            <h3 class="text-xl font-bold font-mono uppercase text-white">Active Tile Matrix A-01</h3>
+
+            <span class="text-[9px] px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300">VISUAL MOCKUP</span>
+
+          </div>
+
+          <p class="text-xs font-mono text-neutral-400 mt-1">Multi-Disc Piezoelectric Array Reaction Grid</p>
+
+        </div>
+
+        <button onclick="toggleModal('tile-modal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25">✕</button>
+
+      </div>
+
+
+
+      <div class="my-8 aspect-square max-w-[260px] mx-auto p-4 rounded-2xl bg-black border border-white/10 relative flex items-center justify-center">
+
+        <div class="grid grid-cols-3 gap-5">
+
+          <div id="piezo-p1" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P1</div>
+
+          <div id="piezo-p2" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P2</div>
+
+          <div id="piezo-p3" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P3</div>
+
+          <div id="piezo-p4" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P4</div>
+
+          <div id="piezo-core" class="w-12 h-12 rounded-full bg-purple-950 border-2 border-purple-400 flex items-center justify-center font-mono text-xs font-bold text-white shadow-[0_0_14px_#C084FC] transition-transform duration-200">CORE</div>
+
+          <div id="piezo-p5" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P5</div>
+
+          <div id="piezo-p6" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P6</div>
+
+          <div id="piezo-p7" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P7</div>
+
+          <div id="piezo-p8" class="w-12 h-12 rounded-full bg-neutral-900 border border-white/20 flex items-center justify-center font-mono text-xs text-neutral-400 piezo-idle">P8</div>
+
+        </div>
+
+      </div>
+
+      <div class="text-xs font-mono text-emerald-400 font-bold flex items-center justify-center space-x-2">
+
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+
+        <span id="tile-status-tag">PARALLEL RECTIFIER CHANNEL ACTIVE</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+<!-- MODAL 3: RECENT FOOTSTEP LOG -->
+
+  <div id="log-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
+
+    <div class="bg-[#0A0B10] border border-white/20 rounded-3xl p-8 max-w-2xl w-full relative shadow-[0_0_60px_rgba(187,160,208,0.2)]">
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+
+        <div>
+
+          <div class="flex items-center space-x-2">
+
+            <h3 class="text-xl font-bold font-mono uppercase text-white">Live Voltage Feed</h3>
+
+            <span class="text-[9px] px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-300">LIVE FIELD 1</span>
+
+          </div>
+
+          <p class="text-xs font-mono text-neutral-400 mt-1">Recent voltage readings reported by ThingSpeak Field 1. Updates every 20 seconds.</p>
+
+        </div>
+
+        <button onclick="toggleModal('log-modal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25">✕</button>
+
+      </div>
+
+      <div class="mt-4 max-h-72 overflow-y-auto overflow-x-auto">
+
+        <table class="w-full font-mono text-xs text-left">
+
+          <thead>
+
+            <tr class="text-neutral-500 border-b border-white/10 pb-2">
+
+              <th class="py-2">Timestamp</th>
+
+              <th class="py-2">Voltage</th>
+
+              <th class="py-2">Source</th>
+
+              
+
+            </tr>
+
+          </thead>
+
+          <tbody id="strike-feed-modal" class="divide-y divide-white/5">
+
+<!-- Dynamically populated via Telemetry Layer -->
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+<!-- MODAL 4: SYSTEM STATUS -->
+
+  <div id="status-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl hidden items-center justify-center p-4">
+
+    <div class="bg-[#0A0B10] border border-white/20 rounded-3xl p-8 max-w-md w-full relative font-mono text-xs shadow-[0_0_60px_rgba(187,160,208,0.2)]">
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+
+        <div>
+
+          <h3 class="text-lg font-bold uppercase text-white">ESP32 Telemetry Status</h3>
+
+          <p class="text-[10px] text-amber-400 font-mono mt-0.5">Live API status; only fields returned by the ESP32 are shown.</p>
+
+        </div>
+
+        <button onclick="toggleModal('status-modal')" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25">✕</button>
+
+      </div>
+
+      <div class="mt-4 space-y-3">
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">Data Source:</span>
+
+          <span class="text-amber-300 font-bold" id="modal-data-source">LIVE ESP32 API</span>
+
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">SoC Clock:</span>
+
+          <span class="text-white font-bold" id="modal-soc-clock">Not reported by API</span>
+
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">Free Heap:</span>
+
+          <span class="text-white font-bold" id="modal-free-heap">Not reported by API</span>
+
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">Rectifier Efficiency (Est.):</span>
+
+          <span class="text-emerald-400 font-bold" id="modal-rectifier-eff">Not measured</span>
+
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">Storage Temperature:</span>
+
+          <span class="text-purple-300 font-bold" id="modal-storage-temp">Not measured</span>
+
+        </div>
+
+        <div class="p-3 bg-black/50 rounded-xl border border-white/10 flex justify-between">
+
+          <span class="text-neutral-400">Last Telemetry Poll:</span>
+
+          <span class="text-neutral-300 font-mono" id="modal-last-poll">--:--:--</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+<!-- JAVASCRIPT: LIVE ESP32 TELEMETRY & THREE.JS SCENE -->
+
+  <script>
+
+/* ==========================================================================
+
+       SECTION 1: HARDWARE CONFIGURATION & DATA CONTRACT
+
+       ========================================================================== */
+
+    const HARDWARE_CONFIG = {
+
+// Live ESP32 telemetry only; do not present simulated sensor values.
+
+      mode: 'LIVE_ESP32', 
+
+// Future ESP32 REST / WebSocket endpoint
+
+      esp32Endpoint: 'http://10.12.47.154/api/data', 
+
+// ESP32 polling interval range (ms)
+
+      simulationIntervalMin: 1000,
+
+      simulationIntervalMax: 1000,
+
+
+
+// Hardware bench parameters (easily reconfigurable)
+
+      nominalCapacitance_uF: 47, // capacitor value supplied by user; energy is not calculated until voltage is measured 
+
+      maxFeedHistory: 20
+
+    };
+
+
+
+/**
+
+     * Unified Telemetry Data Contract:
+
+     * Represents the exact structure the ESP32 will send when connected.
+
+     */
+
+    class TelemetryPacket {
+
+      constructor({
+
+nodeId = 'NODE 01',
+
+status = 'ONLINE',
+
+isDemo = true,
+
+footsteps = 1284,
+
+voltage = 2.84,
+
+power = 0.084,
+
+energyToday = 2.430,
+
+storageLevel = 68,
+
+peakVoltage = 24.6,
+
+energyPerStep = 2.14,
+
+force = 640,
+
+timestamp = new Date().toISOString()
+
+      } = {}) {
+
+        this.nodeId = nodeId;
+
+        this.status = status;
+
+        this.isDemo = isDemo;
+
+        this.footsteps = footsteps;
+
+        this.voltage = voltage;
+
+        this.power = power;
+
+        this.energyToday = energyToday;
+
+        this.storageLevel = storageLevel;
+
+        this.peakVoltage = peakVoltage;
+
+        this.energyPerStep = energyPerStep;
+
+        this.force = force;
+
+        this.timestamp = timestamp;
+
+      }
+
+    }
+
+
+
+/* ==========================================================================
+
+       SECTION 2: DEMO GENERATOR ENGINE (Simulates ESP32 footstep telemetry)
+
+       ========================================================================== */
+
+    class DemoTelemetryGenerator {
+
+      constructor() {
+
+        this.state = new TelemetryPacket({
+
+          nodeId: 'ESP32 TESTBENCH',
+
+          status: 'SYSTEM ONLINE',
+
+          isDemo: true,
+
+          footsteps: 1284,
+
+          voltage: 2.84,
+
+          power: 0.084,
+
+          energyToday: 2.430,
+
+          storageLevel: 68
+
+        });
+
+
+
+        this.diurnalCurvePoints = [180, 175, 160, 120, 80, 35, 30, 25, 95, 100, 105, 15];
+
+      }
+
+
+
+/**
+
+       * Simulates a single physical footstep impact event on the tile.
+
+       */
+
+      generateFootstepEvent() {
+
+        this.state.footsteps += 1;
+
+
+
+// Realistic human footstep force in Newtons (520N - 720N)
+
+        const force = Math.floor(Math.random() * (720 - 520) + 520);
+
+// Instantaneous open-circuit spike off the piezo bridge before capacitor leveling (18V - 26V)
+
+        const peakVoltage = +(Math.random() * (26.0 - 18.5) + 18.5).toFixed(1);
+
+// Harvested kinetic yield per strike (1.65 mJ - 2.45 mJ)
+
+        const stepEnergy_mJ = +(Math.random() * (2.45 - 1.65) + 1.65).toFixed(2);
+
+// Convert mJ to Watt-hours (1 Wh = 3,600,000 mJ)
+
+        this.state.energyToday += (stepEnergy_mJ / 3600000) * 1000; // Scaled demo factor for visual responsiveness
+
+// Small transient rise in rectified capacitor bus voltage
+
+        const deltaV = (Math.random() * 0.05 - 0.02);
+
+        this.state.voltage = +Math.max(2.1, Math.min(3.6, this.state.voltage + deltaV)).toFixed(2);
+
+
+
+// Instantaneous power: P = V^2 / R or V * I equivalent (0.075W - 0.098W)
+
+        this.state.power = +(Math.random() * (0.098 - 0.075) + 0.075).toFixed(3);
+
+
+
+// Slowly accumulate storage level %
+
+        if (Math.random() > 0.6 && this.state.storageLevel < 99) {
+
+          this.state.storageLevel = Math.min(100, this.state.storageLevel + 1);
+
+        }
+
+
+
+        this.state.peakVoltage = peakVoltage;
+
+        this.state.energyPerStep = stepEnergy_mJ;
+
+        this.state.force = force;
+
+        this.state.timestamp = new Date().toISOString();
+
+
+
+// Increment peak diurnal trajectory curve slightly
+
+        const lastIdx = this.diurnalCurvePoints.length - 1;
+
+        this.diurnalCurvePoints[lastIdx] = Math.max(10, this.diurnalCurvePoints[lastIdx] - 1);
+
+
+
+        return { ...this.state };
+
+      }
+
+    }
+
+
+
+/* ==========================================================================
+
+       SECTION 3: TELEMETRY SERVICE LAYER (Abstracts Demo vs Future ESP32 API)
+
+       ========================================================================== */
+
+    class TelemetryService {
+
+      constructor(config) {
+
+        this.config = config;
+
+        this.demoGenerator = new DemoTelemetryGenerator();
+
+        this.listeners = [];
+
+        this.timer = null;
+
+      }
+
+
+
+      subscribe(callback) {
+
+        this.listeners.push(callback);
+
+      }
+
+
+
+      notify(data) {
+
+        this.listeners.forEach(fn => fn(data));
+
+      }
+
+
+
+/**
+
+       * Core service entry: gets data either from demo engine or future ESP32 endpoint.
+
+       */
+
+      async getTelemetry() {
+        if (this.config.mode === 'DEMO') {
+          return this.demoGenerator.generateFootstepEvent();
+        }
+
+        try {
+          const response = await fetch(this.config.esp32Endpoint, {
+            cache: 'no-store'
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          const voltage = Number(data.voltage) || 0;
+          const footsteps = Number(data.footsteps) || 0;
+
+          return new TelemetryPacket({
+            nodeId: 'ESP32 TESTBENCH',
+            status: data.status === 'online' ? 'SYSTEM ONLINE' : 'ONLINE',
+            isDemo: false,
+            footsteps,
+            voltage,
+            power: 0,
+            energyToday: 0,
+            storageLevel: 0,
+            peakVoltage: voltage,
+            energyPerStep: 0,
+            force: 0,
+            timestamp: new Date().toISOString()
+          });
+        } catch (err) {
+          console.error('[TelemetryService] ESP32 connection error:', err);
+          return new TelemetryPacket({
+            nodeId: 'ESP32 DISCONNECTED',
+            status: 'OFFLINE',
+            isDemo: false,
+            footsteps: 0,
+            voltage: 0,
+            power: 0,
+            energyToday: 0,
+            storageLevel: 0,
+            peakVoltage: 0,
+            energyPerStep: 0,
+            force: 0,
+            timestamp: new Date().toISOString()
+          });
+        }
+      }
+
+      start() {
+
+        const scheduleNext = () => {
+
+          const delay = Math.floor(
+
+            Math.random() * (this.config.simulationIntervalMax - this.config.simulationIntervalMin) + 
+
+            this.config.simulationIntervalMin
+
+          );
+
+          this.timer = setTimeout(async () => {
+
+            const data = await this.getTelemetry();
+
+            this.notify(data);
+
+            scheduleNext();
+
+          }, delay);
+
+        };
+
+        scheduleNext();
+
+      }
+
+
+
+      stop() {
+
+        if (this.timer) clearTimeout(this.timer);
+
+      }
+
+    }
+
+
+
+/* ==========================================================================
+
+       SECTION 4: DASHBOARD UI CONTROLLER
+
+       ========================================================================== */
+
+    class DashboardUI {
+
+      constructor() {
+
+// Cached Elements
+
+       
+
+        this.elVoltage = document.getElementById('hero-voltage');
+
+        this.elPower = document.getElementById('hero-power');
+
+        this.elEnergy = document.getElementById('hero-energy-val');
+
+        this.elStorage = document.getElementById('hero-storage');
+
+        this.elStrikeTag = document.getElementById('hero-strike-tag');
+
+        this.elSync = document.getElementById('header-last-sync');
+
+        this.elStatusText = document.getElementById('system-status-text');
+        this.elHeaderNodeId = document.getElementById('header-node-id');
+        this.elDemoBadge = document.getElementById('demo-mode-badge');
+        this.elModalDataSource = document.getElementById('modal-data-source');
+
+        this.elFeedBody = document.getElementById('strike-feed-modal');
+
+        this.elGraphArea = document.getElementById('graph-area-path');
+
+        this.elGraphLine = document.getElementById('graph-line-path');
+
+        this.elCorePiezo = document.getElementById('piezo-core');
+
+        this.dockTileBtn = document.getElementById('dock-tile-btn');
+
+
+
+// Modal telemetry elements
+
+        this.elModalLastPoll = document.getElementById('modal-last-poll');
+
+        this.elModalFreeHeap = document.getElementById('modal-free-heap');
+
+
+
+        this.recentStrikes = [];
+
+      }
+
+
+
+      render(telemetry) {
+        // The ESP32 API currently supplies only cumulative footsteps and piezo signal voltage.
+        if (this.elFootsteps) this.elFootsteps.innerText = Number(telemetry.footsteps || 0).toLocaleString();
+        if (this.elVoltage) this.elVoltage.innerText = `${Number(telemetry.voltage || 0).toFixed(2)}V`;
+        if (this.elPower) this.elPower.innerText = 'Not measured';
+        if (this.elEnergy) this.elEnergy.innerText = '—';
+        if (this.elStorage) this.elStorage.innerText = 'Not measured';
+        if (this.elStrikeTag) this.elStrikeTag.innerText = 'CAPACITOR VOLTAGE SENSOR NOT INSTALLED';
+
+        const date = new Date(telemetry.timestamp || Date.now());
+        const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+        const millisStr = `${timeStr}.${String(date.getMilliseconds()).padStart(3, '0')}`;
+        if (this.elSync) this.elSync.innerText = `SYNC: ${timeStr}`;
+        if (this.elModalLastPoll) this.elModalLastPoll.innerText = millisStr;
+        if (this.elHeaderNodeId) this.elHeaderNodeId.innerText = telemetry.nodeId || 'ESP32';
+        if (this.elStatusText) this.elStatusText.innerText = telemetry.status === 'OFFLINE' ? 'ESP32 OFFLINE' : (telemetry.status === 'CONNECTING' ? 'CONNECTING…' : 'SYSTEM ONLINE');
+        if (this.elModalDataSource) this.elModalDataSource.innerText = telemetry.status === 'OFFLINE' ? 'ESP32 OFFLINE' : (telemetry.status === 'CONNECTING' ? 'CONNECTING…' : 'LIVE ESP32 API');
+        if (this.elDemoBadge) {
+          const badgeText = this.elDemoBadge.querySelector('span:last-child');
+          if (badgeText) badgeText.innerText = 'LIVE ESP32';
+          this.elDemoBadge.classList.toggle('opacity-60', telemetry.status !== 'SYSTEM ONLINE' && telemetry.status !== 'ONLINE');
+        }
+        // Do not generate synthetic power, force, energy, or footstep animations.
+        this.updateLiveFeedTable(telemetry, millisStr);
+        this.updateSplineGraph();
+        if (this.elModalFreeHeap) this.elModalFreeHeap.innerText = 'Not reported by API';
+      }
+
+      animateTileImpulse() {
+
+// Ripple Core Tile
+
+        if (this.elCorePiezo) {
+
+          this.elCorePiezo.style.transform = 'scale(1.18)';
+
+          this.elCorePiezo.style.boxShadow = '0 0 26px #C084FC';
+
+          setTimeout(() => {
+
+            this.elCorePiezo.style.transform = 'scale(1)';
+
+            this.elCorePiezo.style.boxShadow = '0 0 14px #C084FC';
+
+          }, 350);
+
+        }
+
+
+
+// Flash 2-3 random perimeter piezo transducers
+
+        const perimeterIds = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'];
+
+        const randomPicks = perimeterIds.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+        randomPicks.forEach(id => {
+
+          const el = document.getElementById(`piezo-${id}`);
+
+          if (el) {
+
+            el.classList.remove('piezo-idle');
+
+            el.classList.add('piezo-active');
+
+            setTimeout(() => {
+
+              el.classList.remove('piezo-active');
+
+              el.classList.add('piezo-idle');
+
+            }, 500);
+
+          }
+
+        });
+
+
+
+// Flash tile dock button
+
+        if (this.dockTileBtn) {
+
+          this.dockTileBtn.classList.add('border-purple-400', 'shadow-[0_0_12px_rgba(192,132,252,0.4)]');
+
+          setTimeout(() => {
+
+            this.dockTileBtn.classList.remove('border-purple-400', 'shadow-[0_0_12px_rgba(192,132,252,0.4)]');
+
+          }, 400);
+
+        }
+
+      }
+
+
+
+      updateLiveFeedTable(telemetry, timeStr) {
+        if (!this.elFeedBody) return;
+        const count = Number(telemetry.footsteps) || 0;
+        // The API provides a cumulative count, not individual strike timestamps.
+        if (this.lastLoggedFootsteps === undefined) {
+          this.lastLoggedFootsteps = count;
+          return;
+        }
+        if (count <= this.lastLoggedFootsteps || telemetry.status === 'OFFLINE') return;
+        this.lastLoggedFootsteps = count;
+        const row = document.createElement('tr');
+        row.className = 'transition-colors hover:bg-white/5';
+        row.innerHTML = `
+          <td class="py-2.5 text-neutral-400 font-mono">${timeStr}</td>
+          <td class="py-2.5 font-bold text-white font-mono">${count.toLocaleString()}</td>
+          <td class="py-2.5 text-cyan-300 font-bold font-mono">${Number(telemetry.voltage || 0).toFixed(2)} V</td>
+          <td class="py-2.5 text-neutral-300 font-mono">ONLINE</td>
+        `;
+        this.elFeedBody.insertBefore(row, this.elFeedBody.firstChild);
+        while (this.elFeedBody.children.length > HARDWARE_CONFIG.maxFeedHistory) {
+          this.elFeedBody.removeChild(this.elFeedBody.lastChild);
+        }
+      }
+
+      updateSplineGraph() {
+        // No capacitor-voltage sensor is installed, so there is no real energy series to plot.
+        if (this.elGraphArea) this.elGraphArea.setAttribute('d', 'M 0,190 L 600,190 L 600,200 L 0,200 Z');
+        if (this.elGraphLine) this.elGraphLine.setAttribute('d', 'M 0,190 L 600,190');
+      }
+    }
+
+
+
+/* ==========================================================================
+
+       SECTION 5: APPLICATION BOOTSTRAPPER
+
+       ========================================================================== */
+
+    const telemetryService = new TelemetryService(HARDWARE_CONFIG);
+
+    const dashboardUI = new DashboardUI();
+
+
+
+// Wire data pipeline: Telemetry Service -> Dashboard UI
+
+    telemetryService.subscribe(data => dashboardUI.render(data));
+
+
+
+// Seed initial table row for visual readiness
+
+    dashboardUI.render(new TelemetryPacket({
+      nodeId: 'ESP32 TESTBENCH',
+      status: 'CONNECTING',
+      isDemo: false,
+      footsteps: 0,
+      voltage: 0,
+      power: 0,
+      energyToday: 0,
+      storageLevel: 0,
+      peakVoltage: 0,
+      energyPerStep: 0,
+      force: 0
+    }));
+
+
+
+// ESP32 local-IP polling is disabled here because this Vercel page uses ThingSpeak.
+
+
+
+/* ==========================================================================
+
+       SECTION 6: MODAL CONTROLLER & PARALLAX CURSOR
+
+       ========================================================================== */
+
+    function toggleModal(id) {
+
+      const modal = document.getElementById(id);
+
+      if (!modal) return;
+
+      if (modal.classList.contains('hidden')) {
+
+        modal.classList.remove('hidden');
+
+        modal.classList.add('flex');
+
+      } else {
+
+        modal.classList.add('hidden');
+
+        modal.classList.remove('flex');
+
+      }
+
+    }
+
+
+
+// Fluid Mouse Follower
+
+    const customCursor = document.getElementById('custom-cursor');
+
+    const cursorDot = document.getElementById('cursor-dot');
+
+    let targetMouseX = 0, targetMouseY = 0;
+
+    let currentMouseX = 0, currentMouseY = 0;
+
+
+
+    window.addEventListener('mousemove', (e) => {
+
+      const x = e.clientX;
+
+      const y = e.clientY;
+
+      if (customCursor && cursorDot) {
+
+        customCursor.style.left = `${x}px`;
+
+        customCursor.style.top = `${y}px`;
+
+        cursorDot.style.left = `${x}px`;
+
+        cursorDot.style.top = `${y}px`;
+
+      }
+
+
+
+      targetMouseX = (x / window.innerWidth - 0.5) * 2;
+
+      targetMouseY = (y / window.innerHeight - 0.5) * 2;
+
+
+
+      const pctX = (x / window.innerWidth) * 100;
+
+      const pctY = (y / window.innerHeight) * 100;
+
+      document.documentElement.style.setProperty('--mouse-x', `${pctX}%`);
+
+      document.documentElement.style.setProperty('--mouse-y', `${pctY}%`);
+
+    });
+
+
+
+/* ==========================================================================
+
+       SECTION 7: THREE.JS 3D PHOTOREALISTIC CHROME STAR ENGINE
+
+       ========================================================================== */
+
+    (function initPhotorealisticChromeStar() {
+
+      const canvas = document.getElementById('arch-canvas');
+
+      const container = document.getElementById('star-canvas-container');
+
+      if (!canvas || !container) return;
+
+
+
+      const scene = new THREE.Scene();
+
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+
+      camera.position.z = 5.8;
+
+
+
+      const renderer = new THREE.WebGLRenderer({
+
+        canvas,
+
+        alpha: true,
+
+        antialias: true,
+
+        powerPreference: "high-performance"
+
+      });
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+      renderer.toneMappingExposure = 1.35;
+
+
+
+// Studio Reflection HDRI Map Generator
+
+      function createStudioReflectionTexture() {
+
+        const c = document.createElement('canvas');
+
+        c.width = 2048;
+
+        c.height = 1024;
+
+        const ctx = c.getContext('2d');
+
+
+
+// Sky / Upper Horizon (Silver Gradient)
+
+        const sky = ctx.createLinearGradient(0, 0, 0, 512);
+
+        sky.addColorStop(0.0, '#0f1118');
+
+        sky.addColorStop(0.5, '#2b3240');
+
+        sky.addColorStop(0.82, '#8392a5');
+
+        sky.addColorStop(0.97, '#e2e8f0');
+
+        sky.addColorStop(1.0, '#ffffff');
+
+        ctx.fillStyle = sky;
+
+        ctx.fillRect(0, 0, 2048, 512);
+
+
+
+// Ground / Horizon Split
+
+        const floor = ctx.createLinearGradient(0, 512, 0, 1024);
+
+        floor.addColorStop(0.0, '#010204');
+
+        floor.addColorStop(0.1, '#080a11');
+
+        floor.addColorStop(0.4, '#1b202c');
+
+        floor.addColorStop(0.85, '#07080d');
+
+        floor.addColorStop(1.0, '#000000');
+
+        ctx.fillStyle = floor;
+
+        ctx.fillRect(0, 512, 2048, 512);
+
+
+
+// Sharp Mirror Horizon Line
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.fillRect(0, 508, 2048, 4);
+
+
+
+// Studio Overhead Key Light
+
+        const softbox1 = ctx.createRadialGradient(850, 240, 30, 850, 240, 380);
+
+        softbox1.addColorStop(0, '#ffffff');
+
+        softbox1.addColorStop(0.5, 'rgba(255,255,255,0.95)');
+
+        softbox1.addColorStop(0.8, 'rgba(230,240,255,0.5)');
+
+        softbox1.addColorStop(1, 'rgba(255,255,255,0)');
+
+        ctx.fillStyle = softbox1;
+
+        ctx.fillRect(350, 20, 1000, 460);
+
+
+
+// Vertical Elongated Strip Light
+
+        ctx.fillStyle = '#ffffff';
+
+        ctx.shadowColor = '#ffffff';
+
+        ctx.shadowBlur = 35;
+
+        ctx.fillRect(1450, 60, 80, 440);
+
+        ctx.shadowBlur = 0;
+
+
+
+// Warm Bounce
+
+        const warmBounce = ctx.createRadialGradient(1620, 360, 30, 1620, 360, 400);
+
+        warmBounce.addColorStop(0, 'rgba(238, 218, 192, 0.95)');
+
+        warmBounce.addColorStop(0.45, 'rgba(210, 182, 145, 0.6)');
+
+        warmBounce.addColorStop(0.85, 'rgba(180, 145, 110, 0.2)');
+
+        warmBounce.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        ctx.fillStyle = warmBounce;
+
+        ctx.fillRect(1180, 120, 840, 500);
+
+
+
+// Lilac Rim Light
+
+        const lilacGlow = ctx.createRadialGradient(320, 340, 20, 320, 340, 320);
+
+        lilacGlow.addColorStop(0, 'rgba(200, 165, 245, 0.85)');
+
+        lilacGlow.addColorStop(0.55, 'rgba(155, 105, 215, 0.4)');
+
+        lilacGlow.addColorStop(1, 'rgba(0,0,0,0)');
+
+        ctx.fillStyle = lilacGlow;
+
+        ctx.fillRect(40, 80, 560, 500);
+
+
+
+        const texture = new THREE.CanvasTexture(c);
+
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+
+        return texture;
+
+      }
+
+
+
+      const studioTexture = createStudioReflectionTexture();
+
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+      pmremGenerator.compileEquirectangularShader();
+
+      const envMap = pmremGenerator.fromEquirectangular(studioTexture).texture;
+
+      scene.environment = envMap;
+
+
+
+// Mathematical 4-Point Puffed Chrome Star Geometry
+
+      function createPhotorealStarGeometry() {
+
+        const geom = new THREE.BufferGeometry();
+
+        const Nu = 72;
+
+        const Ntheta = 280;
+
+
+
+        const R_max = 2.22;
+
+        const R_min = 0.52;
+
+        const thickness = 0.54;
+
+
+
+        const positions = [];
+
+        const indices = [];
+
+
+
+        function evaluatePoint(u, theta, isFront) {
+
+          const w = Math.pow((Math.cos(4 * theta) + 1) / 2, 2.6);
+
+          const R = R_min + (R_max - R_min) * w;
+
+
+
+          const x = u * R * Math.cos(theta);
+
+          const y = u * R * Math.sin(theta);
+
+
+
+          const H = Math.pow(Math.max(0, 1 - u * u), 0.75) * Math.pow(Math.max(0.0001, u), 0.42);
+
+
+
+          const thetaNorm = ((theta % (Math.PI / 2)) + (Math.PI / 2)) % (Math.PI / 2);
+
+          const deltaTheta = Math.min(thetaNorm, Math.PI / 2 - thetaNorm);
+
+          const t_a = deltaTheta / (Math.PI / 4);
+
+
+
+          const Q = 1.0 - 0.72 * Math.pow(t_a, 1.18);
+
+          const z = (isFront ? 1 : -1) * thickness * H * Q;
+
+          return [x, y, z];
+
+        }
+
+
+
+// Front half
+
+        for (let i = 0; i <= Nu; i++) {
+
+          const u = i / Nu;
+
+          for (let j = 0; j < Ntheta; j++) {
+
+            const theta = (j / Ntheta) * Math.PI * 2;
+
+            const pt = evaluatePoint(u, theta, true);
+
+            positions.push(pt[0], pt[1], pt[2]);
+
+          }
+
+        }
+
+
+
+// Front half indices
+
+        for (let i = 0; i < Nu; i++) {
+
+          for (let j = 0; j < Ntheta; j++) {
+
+            const nextJ = (j + 1) % Ntheta;
+
+            const v00 = i * Ntheta + j;
+
+            const v01 = i * Ntheta + nextJ;
+
+            const v10 = (i + 1) * Ntheta + j;
+
+            const v11 = (i + 1) * Ntheta + nextJ;
+
+
+
+            indices.push(v00, v10, v11);
+
+            indices.push(v00, v11, v01);
+
+          }
+
+        }
+
+
+
+// Back half
+
+        const backOffset = (Nu + 1) * Ntheta;
+
+        for (let i = 0; i < Nu; i++) {
+
+          const u = i / Nu;
+
+          for (let j = 0; j < Ntheta; j++) {
+
+            const theta = (j / Ntheta) * Math.PI * 2;
+
+            const pt = evaluatePoint(u, theta, false);
+
+            positions.push(pt[0], pt[1], pt[2]);
+
+          }
+
+        }
+
+
+
+// Back half indices
+
+        for (let i = 0; i < Nu; i++) {
+
+          for (let j = 0; j < Ntheta; j++) {
+
+            const nextJ = (j + 1) % Ntheta;
+
+            const v00 = backOffset + i * Ntheta + j;
+
+            const v01 = backOffset + i * Ntheta + nextJ;
+
+
+
+            let v10, v11;
+
+            if (i === Nu - 1) {
+
+              v10 = Nu * Ntheta + j;
+
+              v11 = Nu * Ntheta + nextJ;
+
+            } else {
+
+              v10 = backOffset + (i + 1) * Ntheta + j;
+
+              v11 = backOffset + (i + 1) * Ntheta + nextJ;
+
+            }
+
+
+
+            indices.push(v00, v11, v10);
+
+            indices.push(v00, v01, v11);
+
+          }
+
+        }
+
+
+
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+        geom.setIndex(indices);
+
+        geom.computeVertexNormals();
+
+
+
+        return geom;
+
+      }
+
+
+
+      const chromeMaterial = new THREE.MeshPhysicalMaterial({
+
+        color: 0xffffff,
+
+        metalness: 1.0,
+
+        roughness: 0.035,
+
+        clearcoat: 1.0,
+
+        clearcoatRoughness: 0.02,
+
+        reflectivity: 1.0,
+
+        envMapIntensity: 2.75,
+
+      });
+
+
+
+      const starGeometry = createPhotorealStarGeometry();
+
+      const starMesh = new THREE.Mesh(starGeometry, chromeMaterial);
+
+      scene.add(starMesh);
+
+
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+
+      keyLight.position.set(4, 7, 5);
+
+      scene.add(keyLight);
+
+
+
+      const rimLight = new THREE.DirectionalLight(0xbba0d0, 2.0);
+
+      rimLight.position.set(-5, -4, 3);
+
+      scene.add(rimLight);
+
+
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+
+      scene.add(ambientLight);
+
+
+
+      function handleResize() {
+
+        const width = container.clientWidth || 400;
+
+        const height = container.clientHeight || 400;
+
+        camera.aspect = width / height;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(width, height, false);
+
+      }
+
+      window.addEventListener('resize', handleResize);
+
+      handleResize();
+
+
+
+      let isDragging = false;
+
+      let prevPointerX = 0, prevPointerY = 0;
+
+      let rotVelX = 0, rotVelY = 0;
+
+      let rotX = 0, rotY = 0;
+
+      let strikeScale = 1.0;
+
+
+
+      canvas.addEventListener('pointerdown', (e) => {
+
+        isDragging = true;
+
+        prevPointerX = e.clientX;
+
+        prevPointerY = e.clientY;
+
+      });
+
+
+
+      window.addEventListener('pointermove', (e) => {
+
+        if (!isDragging) return;
+
+        const deltaX = e.clientX - prevPointerX;
+
+        const deltaY = e.clientY - prevPointerY;
+
+        prevPointerX = e.clientX;
+
+        prevPointerY = e.clientY;
+
+
+
+        rotVelY += deltaX * 0.007;
+
+        rotVelX += deltaY * 0.007;
+
+      });
+
+
+
+      window.addEventListener('pointerup', () => { isDragging = false; });
+
+
+
+// Kinetic footstep pulse function triggered upon footstep events
+
+      window.triggerChromeStarStrike = function() {
+
+        strikeScale = 1.08;
+
+      };
+
+
+
+      let clock = new THREE.Clock();
+
+      function animate() {
+
+        requestAnimationFrame(animate);
+
+        const elapsed = clock.getElapsedTime();
+
+
+
+        currentMouseX += (targetMouseX - currentMouseX) * 0.05;
+
+        currentMouseY += (targetMouseY - currentMouseY) * 0.05;
+
+
+
+        rotX += rotVelX;
+
+        rotY += rotVelY;
+
+        rotVelX *= 0.92;
+
+        rotVelY *= 0.92;
+
+
+
+        const hoverY = Math.sin(elapsed * 1.5) * 0.06;
+
+        const idleRotZ = Math.sin(elapsed * 0.8) * 0.03;
+
+
+
+        starMesh.position.y = hoverY;
+
+        starMesh.rotation.x = rotX + currentMouseY * 0.28;
+
+        starMesh.rotation.y = rotY + currentMouseX * 0.35 + Math.sin(elapsed * 0.5) * 0.15;
+
+        starMesh.rotation.z = idleRotZ;
+
+
+
+        if (strikeScale > 1.0) {
+
+          strikeScale += (1.0 - strikeScale) * 0.08;
+
+        }
+
+        starMesh.scale.set(strikeScale, strikeScale, strikeScale);
+
+
+
+        renderer.render(scene, camera);
+
+      }
+
+      animate();
+
+    })();
+  </script>
+
+
+<script>
+async function updateVoltageDisplays() {
+  const voltageElements = [
+    document.getElementById("hero-energy-val"),
+    document.getElementById("hero-voltage"),
+    document.getElementById("piezo-voltage")
+  ].filter(Boolean);
+  const peakLabel = document.getElementById("graph-peak-label");
+  const graphArea = document.getElementById("graph-area-path");
+  const graphLine = document.getElementById("graph-line-path");
+
+  try {
+    const response = await fetch(
+      "https://api.thingspeak.com/channels/3546179/feeds.json?results=20",
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("ThingSpeak request failed: " + response.status);
+    const data = await response.json();
+    const feeds = (data.feeds || []).filter(feed => feed.field1 !== null && feed.field1 !== undefined && feed.field1 !== "");
+    const readings = feeds.map(feed => Number(feed.field1)).filter(value => Number.isFinite(value));
+    if (readings.length === 0) throw new Error("No valid voltage readings in ThingSpeak Field 1.");
+
+    // Populate the live voltage feed from actual ThingSpeak Field 1 readings.
+    const feedBody = document.getElementById("strike-feed-modal");
+    if (feedBody) {
+      const validFeeds = (data.feeds || []).filter(feed =>
+        feed.field1 !== null && feed.field1 !== undefined && feed.field1 !== "" &&
+        Number.isFinite(Number(feed.field1))
+      );
+      feedBody.replaceChildren();
+      validFeeds.slice(-20).reverse().forEach(feed => {
+        const tr = document.createElement("tr");
+        tr.className = "text-neutral-300";
+        const date = feed.created_at ? new Date(feed.created_at) : null;
+        const timestamp = date && !Number.isNaN(date.getTime())
+          ? date.toLocaleString()
+          : "—";
+        const voltage = Number(feed.field1);
+        [timestamp, voltage.toFixed(2) + " V", "ThingSpeak Field 1"].forEach(value => {
+          const td = document.createElement("td");
+          td.className = "py-2 pr-3";
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        feedBody.appendChild(tr);
+      });
+      if (validFeeds.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 3;
+        td.className = "py-4 text-neutral-500";
+        td.textContent = "No voltage readings are available yet.";
+        tr.appendChild(td);
+        feedBody.appendChild(tr);
+      }
+    }
+
+    const latestVoltage = readings[readings.length - 1];
+    const peakVoltage = Math.max(...readings);
+    const formatted = latestVoltage.toFixed(2) + " V";
+    voltageElements.forEach(element => { element.textContent = formatted; });
+    if (peakLabel) peakLabel.textContent = "PEAK " + peakVoltage.toFixed(2) + " V";
+
+    if (graphLine && graphArea) {
+      const width = 600, height = 200, pad = 12;
+      const minV = Math.min(...readings), maxV = Math.max(...readings);
+      const range = Math.max(maxV - minV, 0.01);
+      const points = readings.map((value, index) => {
+        const x = readings.length === 1 ? width : (index / (readings.length - 1)) * width;
+        const y = height - pad - ((value - minV) / range) * (height - pad * 2);
+        return [x, y];
+      });
+      const linePath = points.map((point, index) =>
+        (index === 0 ? "M " : " L ") + point[0].toFixed(1) + "," + point[1].toFixed(1)
+      ).join("");
+      graphLine.setAttribute("d", linePath);
+      graphArea.setAttribute("d", linePath + " L " + width + "," + height + " L 0," + height + " Z");
+    }
+    console.log("ThingSpeak voltage updated:", formatted);
+  } catch (error) {
+    console.error("Could not update ThingSpeak voltage:", error);
+    if (peakLabel) peakLabel.textContent = "VOLTAGE UNAVAILABLE";
+  }
+}
+updateVoltageDisplays();
+setInterval(updateVoltageDisplays, 20000);
+</script>
+
+
+
+
+
+</body>
+
+</html>
