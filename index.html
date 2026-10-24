@@ -2241,6 +2241,8 @@ async function updateVoltageDisplays() {
   const peakLabel = document.getElementById("graph-peak-label");
   const graphArea = document.getElementById("graph-area-path");
   const graphLine = document.getElementById("graph-line-path");
+  const statusText = document.getElementById("system-status-text");
+const dataSource = document.getElementById("modal-data-source");
 
   try {
     const response = await fetch(
@@ -2249,6 +2251,19 @@ async function updateVoltageDisplays() {
     );
     if (!response.ok) throw new Error("ThingSpeak request failed: " + response.status);
     const data = await response.json();
+    const validLatest = (data.feeds || []).some(feed =>
+  feed.field1 !== null &&
+  feed.field1 !== undefined &&
+  feed.field1 !== "" &&
+  Number.isFinite(Number(feed.field1))
+);
+
+if (!validLatest) {
+  throw new Error("No valid voltage reading from ThingSpeak.");
+}
+
+if (statusText) statusText.textContent = "SYSTEM ONLINE";
+if (dataSource) dataSource.textContent = "LIVE THINGSPEAK DATA";
     const feeds = (data.feeds || []).filter(feed => feed.field1 !== null && feed.field1 !== undefined && feed.field1 !== "");
     const readings = feeds.map(feed => Number(feed.field1)).filter(value => Number.isFinite(value));
     if (readings.length === 0) throw new Error("No valid voltage readings in ThingSpeak Field 1.");
@@ -2312,6 +2327,8 @@ async function updateVoltageDisplays() {
     console.log("ThingSpeak voltage updated:", formatted);
   } catch (error) {
     console.error("Could not update ThingSpeak voltage:", error);
+    if (statusText) statusText.textContent = "DATA OFFLINE";
+if (dataSource) dataSource.textContent = "THINGSPEAK UNAVAILABLE";
     if (peakLabel) peakLabel.textContent = "VOLTAGE UNAVAILABLE";
   }
 }
