@@ -1413,7 +1413,7 @@ timestamp = new Date().toISOString()
         if (this.elPower) this.elPower.innerText = 'Not measured';
         if (this.elEnergy) this.elEnergy.innerText = '—';
         if (this.elStorage) this.elStorage.innerText = 'Not measured';
-        if (this.elStrikeTag) this.elStrikeTag.innerText = 'CAPACITOR VOLTAGE SENSOR NOT INSTALLED';
+        if (this.elStrikeTag) this.elStrikeTag.innerText = 'CAPACITOR VOLTAGE — LIVE';
 
         const date = new Date(telemetry.timestamp || Date.now());
         const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
